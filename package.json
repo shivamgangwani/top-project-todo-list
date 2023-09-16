@@ -1,0 +1,26 @@
+{
+  "name": "top-project-todo-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "webpack",
+    "watch" : "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivamgangwani/top-project-todo-list.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shivamgangwani/top-project-todo-list/issues"
+  },
+  "homepage": "https://github.com/shivamgangwani/top-project-todo-list#readme",
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
