@@ -30,6 +30,7 @@ export default class ToDo extends Entity {
     // DOM Functions
     createDOMNode() {
         let todoEl = createElementEx("div", '', ['todo-container']);
+        if(this.done) todoEl.classList.add('item-done');
 
         let checkZone = createElementEx("div", '', ['todo-done-check']);
         const doneBtn = createElementEx("img", '', ['todo-done-check-img']);
@@ -39,14 +40,14 @@ export default class ToDo extends Entity {
 
         let todoInfo = createElementEx("div", '', ['todo-info']);
         const info = {
-            "Title" : this.title,
+            "" : this.title,
             "Description" : this.description,
             "Priority" : this.priority,
             "Due At" : this.due_at
         }
         for(const [k,v] of Object.entries(info)) {
             let infoContainer = createElementEx("div", '', ['todo-info-item']);
-            let infoKey = createElementEx("span", '', ['todo-info-item-key'], `${k}: `);
+            let infoKey = createElementEx("span", '', ['todo-info-item-key'], (k ? `${k}: ` : ""));
             let infoValue = createElementEx("span", '', ['todo-info-item-value'], `${v}`);
             infoContainer.append(infoKey, infoValue);
             todoInfo.appendChild(infoContainer);
