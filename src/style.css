@@ -92,8 +92,30 @@ button.project-button-delete {
     border-radius: 12px;
 }
 
-.todo-item-key {
-    font-weight: bold;
+.todo-container {
+    display: grid;
+    grid-template-columns: 10% 90%;
+    gap: 1rem;
+}
+
+.todo-action-item {
+    border: 0;
+    padding: 0.5rem 1.25rem;
+    margin-top: 0.75rem;
+    margin-right: 1rem;
+    background-color: #004225;
+    color: white;
+    border-radius: 12px;
+}
+
+.todo-done-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.todo-done-check-img {
+    width: 60%;
+    height: auto;
 }
 
 #todo-add-new {

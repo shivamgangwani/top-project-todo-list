@@ -126,7 +126,7 @@ class App {
     flipToDoDone(todo, event) {
         todo.toggleDoneState();
 
-        const todoEl = event.target.parentElement;
+        const todoEl = event.target.parentElement.parentElement;
         this.refreshToDoNode(todo, todoEl);
     }
 

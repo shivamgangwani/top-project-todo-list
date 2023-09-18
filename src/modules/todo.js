@@ -1,5 +1,8 @@
 import Entity, {createElementEx} from "./shared";
 
+import checkEmpty from '../imgs/check-empty.png';
+import checkMarked from '../imgs/check-marked.png';
+
 export default class ToDo extends Entity {
     constructor (title, description) {
         super(title, description);
@@ -26,25 +29,33 @@ export default class ToDo extends Entity {
 
     // DOM Functions
     createDOMNode() {
-        let todoEl = createElementEx("div", '', []);
+        let todoEl = createElementEx("div", '', ['todo-container']);
+
+        let checkZone = createElementEx("div", '', ['todo-done-check']);
+        const doneBtn = createElementEx("img", '', ['todo-done-check-img']);
+        doneBtn.src = this.done ? checkMarked : checkEmpty;
+        checkZone.appendChild(doneBtn);
+        todoEl.appendChild(checkZone);
+
+        let todoInfo = createElementEx("div", '', ['todo-info']);
         const info = {
             "Title" : this.title,
             "Description" : this.description,
-            "Done" : this.done,
             "Priority" : this.priority,
             "Due At" : this.due_at
         }
         for(const [k,v] of Object.entries(info)) {
-            let infoContainer = createElementEx("div", '', ['todo-item']);
-            let infoKey = createElementEx("span", '', ['todo-item-key'], `${k}: `);
-            let infoValue = createElementEx("span", '', ['todo-item-value'], `${v}`);
+            let infoContainer = createElementEx("div", '', ['todo-info-item']);
+            let infoKey = createElementEx("span", '', ['todo-info-item-key'], `${k}: `);
+            let infoValue = createElementEx("span", '', ['todo-info-item-value'], `${v}`);
             infoContainer.append(infoKey, infoValue);
-            todoEl.appendChild(infoContainer);
+            todoInfo.appendChild(infoContainer);
         }
     
-        const editBtn = createElementEx("div", '', [], "Edit Item");
-        const doneBtn = createElementEx("div", '', [], (this.done ? 'Mark Undone' : 'Mark Done'));
-        todoEl.append(editBtn, doneBtn);
+        const editBtn = createElementEx("button", '', ['todo-action-item'], "Edit Item");
+        todoInfo.append(editBtn);
+        
+        todoEl.appendChild(todoInfo);
         return {todoEl, editBtn, doneBtn};
     }
 
