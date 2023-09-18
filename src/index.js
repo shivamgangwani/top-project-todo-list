@@ -33,11 +33,11 @@ class App {
     addDummyData() {
         // Sample data for testing
         let proj = this.createNewProject("Testing", "12345");
-        proj.createToDo("Test", "123123123");
-        proj.createToDo("Test", "123123123");
-        proj.createToDo("Test", "123123123");
-        proj.createToDo("Test", "123123123");
-        proj.createToDo("Test", "123123123");
+        proj.addToDo(new ToDo("Test", "123123123"));
+        proj.addToDo(new ToDo("Test", "123123123"));
+        proj.addToDo(new ToDo("Test", "123123123"));
+        proj.addToDo(new ToDo("Test", "123123123"));
+        proj.addToDo(new ToDo("Test", "123123123"));
     }
 
 
@@ -81,6 +81,7 @@ class App {
         this.DOM_ELEMENTS.contentAreaHeader.textContent = project.title;
         this.renderProjectToDos(project);
         this.current_project = project;
+        this.DOM_ELEMENTS.todoContainer = this.DOM_ELEMENTS.contentArea.querySelector("#todo-container");
     }
 
     deleteProject(project, event) {
@@ -106,18 +107,16 @@ class App {
         return tmp.todoEl;
     }
 
-    createToDo(project) {
+    createToDo() {
         let todoDetails = getEntityInput(
             "Enter title (Max 20 characters): ",
             "Enter description: ",
         );
         if(todoDetails === undefined) return;
-        return this.addNewToDo(project, todoDetails.name, todoDetails.description);
-    }
-
-    addNewToDo(project, title, description) {
-        console.log("addNewToDo called");
-        console.log(project, title, description);
+        const todo = new ToDo(todoDetails.name, todoDetails.description);
+        this.current_project.addToDo(todo);
+        this.DOM_ELEMENTS.todoContainer.appendChild(this.createToDoNode(todo));
+        return todo;
     }
 
     refreshToDoNode(todo, node) {

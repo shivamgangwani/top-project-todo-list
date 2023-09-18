@@ -9,8 +9,8 @@ export default class Project extends Entity {
         this.todos = [];
     }
 
-    createToDo(title, description) {
-        this.todos.push(new ToDo(title, description));
+    addToDo(todo) {
+        this.todos.push(todo);
     }
 
     deleteToDo(todo) {
