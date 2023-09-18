@@ -1,5 +1,7 @@
-import Entity from "./shared";
+import Entity, {createElementEx} from "./shared";
 import ToDo from "./todo";
+
+import trashIcon from "../imgs/trash.png";
 
 export default class Project extends Entity {
     constructor(title, description) {
@@ -27,5 +29,16 @@ export default class Project extends Entity {
 
     getPendingToDosCount() {
         return this.getPendingToDos().length;
+    }
+
+    // DOM Functions
+    createDOMNode() {
+        let btn = createElementEx("button", '', ['project-button']);
+        let title = createElementEx("p", '', ['project-button-title'], this.title);
+        let trashBtn = createElementEx("img", '', ['project-delete-trash-icon'], "");
+        trashBtn.src = trashIcon;
+    
+        btn.append(title, trashBtn);
+        return {btn, trashBtn};
     }
 }
