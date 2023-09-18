@@ -73,12 +73,13 @@ class App {
         container.appendChild(addNewToDoButton);
 
         project.todos.forEach((todo) => container.appendChild(this.createToDoNode(todo)));
-        this.DOM_ELEMENTS.contentAreaBody.replaceChildren(container);
+        this.DOM_ELEMENTS.contentAreaBody.append(container);
         return container;
     }
 
     viewProject(project) {
         this.DOM_ELEMENTS.contentAreaHeader.textContent = project.title;
+        this.DOM_ELEMENTS.contentAreaBody.replaceChildren(createElementEx("p", '', [], project.description));
         this.renderProjectToDos(project);
         this.current_project = project;
         this.DOM_ELEMENTS.todoContainer = this.DOM_ELEMENTS.contentArea.querySelector("#todo-container");
