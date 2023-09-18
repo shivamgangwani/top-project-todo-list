@@ -39,25 +39,32 @@ export default class ToDo extends Entity {
         todoEl.appendChild(checkZone);
 
         let todoInfo = createElementEx("div", '', ['todo-info']);
+        let todoInfoLeft = createElementEx("div", '', ['todo-info-left']);
         const info = {
             "" : this.title,
             "Description" : this.description,
-            "Priority" : this.priority,
-            "Due At" : this.due_at
         }
         for(const [k,v] of Object.entries(info)) {
             let infoContainer = createElementEx("div", '', ['todo-info-item']);
             let infoKey = createElementEx("span", '', ['todo-info-item-key'], (k ? `${k}: ` : ""));
             let infoValue = createElementEx("span", '', ['todo-info-item-value'], `${v}`);
             infoContainer.append(infoKey, infoValue);
-            todoInfo.appendChild(infoContainer);
+            todoInfoLeft.appendChild(infoContainer);
         }
     
         const editBtn = createElementEx("button", '', ['todo-action-item'], "Edit Item");
         const deleteBtn = createElementEx("button", '', ['todo-action-item'], "Delete Item");
 
-        todoInfo.append(editBtn, deleteBtn);
-        
+        todoInfoLeft.append(editBtn, deleteBtn);
+
+        const todoInfoRight = createElementEx("div", '', ['todo-info-right'], "");
+        const priorityButton = createElementEx("button", '', ['todo-info-priority'], this.priority);
+        const dueButton = createElementEx("button", '', ['todo-info-due-date'], this.due_at);
+        todoInfoRight.append(priorityButton, dueButton);
+
+
+
+        todoInfo.append(todoInfoLeft, todoInfoRight);
         todoEl.appendChild(todoInfo);
         return {todoEl, editBtn, doneBtn, deleteBtn};
     }

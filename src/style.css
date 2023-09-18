@@ -104,6 +104,26 @@ button.project-button-delete {
     opacity: 0.25;
 }
 
+.todo-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.todo-info-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-info-right > button {
+    width: 100%;
+    padding: 0.5rem 1.2rem;
+    margin-bottom: 0.5rem;
+    border: 0;
+    background-color: #141414;
+    color: white;
+    border-radius: 6px;
+}
+
 .todo-action-item {
     border: 0;
     padding: 0.5rem 1.25rem;
