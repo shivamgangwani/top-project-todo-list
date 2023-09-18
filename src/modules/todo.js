@@ -27,19 +27,9 @@ export default class ToDo extends Entity {
         this.setDoneState(!this.done);
     }
 
-    // DOM Functions
-    createDOMNode() {
-        let todoEl = createElementEx("div", '', ['todo-container']);
-        if(this.done) todoEl.classList.add('item-done');
-
-        let checkZone = createElementEx("div", '', ['todo-done-check']);
-        const doneBtn = createElementEx("img", '', ['todo-done-check-img']);
-        doneBtn.src = this.done ? checkMarked : checkEmpty;
-        checkZone.appendChild(doneBtn);
-        todoEl.appendChild(checkZone);
-
-        let todoInfo = createElementEx("div", '', ['todo-info']);
-        let todoInfoLeft = createElementEx("div", '', ['todo-info-left']);
+    // DOM Functions (static, to create UI elements, no event management or binding)
+    createDOMNodeInfoLeft() {
+        let el = createElementEx("div", '', ['todo-info-left']);
         const info = {
             "" : this.title,
             "Description" : this.description,
@@ -49,24 +39,53 @@ export default class ToDo extends Entity {
             let infoKey = createElementEx("span", '', ['todo-info-item-key'], (k ? `${k}: ` : ""));
             let infoValue = createElementEx("span", '', ['todo-info-item-value'], `${v}`);
             infoContainer.append(infoKey, infoValue);
-            todoInfoLeft.appendChild(infoContainer);
+            el.appendChild(infoContainer);
         }
     
         const editBtn = createElementEx("button", '', ['todo-action-item'], "Edit Item");
         const deleteBtn = createElementEx("button", '', ['todo-action-item'], "Delete Item");
 
-        todoInfoLeft.append(editBtn, deleteBtn);
+        el.append(editBtn, deleteBtn);
+        return {el, editBtn, deleteBtn};
+    }
 
-        const todoInfoRight = createElementEx("div", '', ['todo-info-right'], "");
+    createDOMNodeInfoRight() {
+        const el = createElementEx("div", '', ['todo-info-right'], "");
         const priorityBtn = createElementEx("button", '', ['todo-info-priority'], this.priority);
         const dueBtn = createElementEx("button", '', ['todo-info-due-date'], this.due_at);
-        todoInfoRight.append(priorityBtn, dueBtn);
+        el.append(priorityBtn, dueBtn);
+        return {el, priorityBtn, dueBtn}
+    }
 
+    createDOMNodeCheckZone() {
+        let btn = createElementEx("div", '', ['todo-done-check']);
+        const doneBtn = createElementEx("img", '', ['todo-done-check-img']);
+        doneBtn.src = this.done ? checkMarked : checkEmpty;
+        btn.appendChild(doneBtn);
+        return {btn, doneBtn};
+    }
 
+    createDOMNode() {
+        let todoEl = createElementEx("div", '', ['todo-container']);
+        if(this.done) todoEl.classList.add('item-done');
 
-        todoInfo.append(todoInfoLeft, todoInfoRight);
+        const checkZone = this.createDOMNodeCheckZone();
+        todoEl.appendChild(checkZone.btn);
+
+        let todoInfo = createElementEx("div", '', ['todo-info']);
+        const infoLeft = this.createDOMNodeInfoLeft()
+        const infoRight = this.createDOMNodeInfoRight();
+
+        todoInfo.append(infoLeft.el, infoRight.el);
         todoEl.appendChild(todoInfo);
-        return {todoEl, editBtn, doneBtn, deleteBtn, dueBtn, priorityBtn};
+        return {
+            todoEl, 
+            doneBtn : checkZone.doneBtn, 
+            editBtn : infoLeft.editBtn, 
+            deleteBtn: infoLeft.deleteBtn, 
+            dueBtn : infoRight.dueBtn, 
+            priorityBtn : infoRight.priorityBtn
+        };
     }
 
     // Static methods
