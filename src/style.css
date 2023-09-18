@@ -1,5 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Raleway';
+    font-weight: 300;
+    font-size: 1.1rem;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+#content {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 20vw 80vw;
+}
+
+
+/* <Sidebar> */
+#sidebar {
+    padding-top: 1rem;
+    background-color: #FFB000;
+    color: white;
+}
+
+#sidebar h1 {
+    text-align: center;
+}
+
+#projects {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 2rem 0.5rem;
+}
+
+#projects button {
+    padding: 0.75rem 1rem;
+    outline: none;
+    border: 0;
+    background-color: #F5F5DC;
+    border-radius: 12px;
+    color: black;
+    transition: 0.1s;
+    margin-top: 1rem;
+}
+
+.project-button {
+    display: flex;
+    justify-content: space-between;
+}
+
+.project-button button:first-child {
+    flex-grow: 1;
+}
+
+#projects button:hover {
+    background-color: #FFCF9D;
+}
+
+button.project-button-delete {
+    padding: 0;
+}
+
+.project-delete-trash-icon {
+    height: 24px;
+    width: auto;
+}
+/* </Sidebar> */
+
+/* <ContentDisplay> */
+#content-display {
+    padding: 1rem 2rem;
+}
+
+#content-display-body {
+    padding-top: 3rem;
+}
+
+#todo-container {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#todo-container > div {
+    background-color: #F5F5DC;
+    margin-top: 1rem;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+}
+
+.todo-item-key {
+    font-weight: bold;
+}
+
+#todo-add-new {
+    display: flex;
+    align-items: center;
+}
+
+#add-icon {
+    color: white;
+    background-color: green;
+    border-radius: 48px;
+    font-size: 2rem;
+    padding: 0rem 2rem;
+}
+
+#add-icon-text {
+    margin-left: 1rem;
 }
