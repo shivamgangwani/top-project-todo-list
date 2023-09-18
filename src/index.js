@@ -102,6 +102,7 @@ class App {
         const tmp = todo.createDOMNode();
         tmp.doneBtn.addEventListener('click', (e) => this.flipToDoDone(todo, e));
         tmp.editBtn.addEventListener('click', (e) => this.editToDo(todo, e));
+        tmp.deleteBtn.addEventListener('click', (e) => this.deleteToDo(todo, e));
         return tmp.todoEl;
     }
 
@@ -128,6 +129,14 @@ class App {
 
         const todoEl = event.target.parentElement.parentElement;
         this.refreshToDoNode(todo, todoEl);
+    }
+
+    deleteToDo(todo, event) {
+        const todoEl = event.target.parentElement.parentElement;
+        todoEl.remove();
+
+        this.current_project.deleteToDo(todo);
+        return todo;
     }
 
     editToDo(todo, event) { 

@@ -53,10 +53,12 @@ export default class ToDo extends Entity {
         }
     
         const editBtn = createElementEx("button", '', ['todo-action-item'], "Edit Item");
-        todoInfo.append(editBtn);
+        const deleteBtn = createElementEx("button", '', ['todo-action-item'], "Delete Item");
+
+        todoInfo.append(editBtn, deleteBtn);
         
         todoEl.appendChild(todoInfo);
-        return {todoEl, editBtn, doneBtn};
+        return {todoEl, editBtn, doneBtn, deleteBtn};
     }
 
     // Static methods
