@@ -58,15 +58,15 @@ export default class ToDo extends Entity {
         todoInfoLeft.append(editBtn, deleteBtn);
 
         const todoInfoRight = createElementEx("div", '', ['todo-info-right'], "");
-        const priorityButton = createElementEx("button", '', ['todo-info-priority'], this.priority);
-        const dueButton = createElementEx("button", '', ['todo-info-due-date'], this.due_at);
-        todoInfoRight.append(priorityButton, dueButton);
+        const priorityBtn = createElementEx("button", '', ['todo-info-priority'], this.priority);
+        const dueBtn = createElementEx("button", '', ['todo-info-due-date'], this.due_at);
+        todoInfoRight.append(priorityBtn, dueBtn);
 
 
 
         todoInfo.append(todoInfoLeft, todoInfoRight);
         todoEl.appendChild(todoInfo);
-        return {todoEl, editBtn, doneBtn, deleteBtn};
+        return {todoEl, editBtn, doneBtn, deleteBtn, dueBtn, priorityBtn};
     }
 
     // Static methods

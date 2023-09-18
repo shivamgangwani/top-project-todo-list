@@ -103,8 +103,10 @@ class App {
     createToDoNode(todo) {
         const tmp = todo.createDOMNode();
         tmp.doneBtn.addEventListener('click', (e) => this.flipToDoDone(todo, e));
-        tmp.editBtn.addEventListener('click', (e) => this.editToDo(todo, e));
         tmp.deleteBtn.addEventListener('click', (e) => this.deleteToDo(todo, e));
+
+        // Enable edit buttons only if todo is not marked as done yet
+        if(!todo.done) [tmp.editBtn, tmp.dueBtn, tmp.priorityBtn].forEach((k) => k.addEventListener('click', (e) => this.editToDo(todo, e)));;
         return tmp.todoEl;
     }
 
@@ -132,7 +134,7 @@ class App {
     }
 
     deleteToDo(todo, event) {
-        const todoEl = event.target.parentElement.parentElement;
+        const todoEl = event.target.parentElement.parentElement.parentElement;
         todoEl.remove();
 
         this.current_project.deleteToDo(todo);
