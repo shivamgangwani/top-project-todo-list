@@ -25,7 +25,9 @@ class App {
         this.projects = [];
         this.current_project = null;
         this.init();
-        this.addDummyData();
+        
+        if(this.getFromLocalStorage() === null) this.addDummyData();
+        else this.loadLocalStorage();
     }
 
     init() {
@@ -34,11 +36,14 @@ class App {
         // "Add Project" button
         let newProjectBtn = createElementEx("button", "add-new-project", [], "Add Project");
         newProjectBtn.addEventListener('click', () => this.addNewProject());
-        this.DOM_ELEMENTS.projects.appendChild(newProjectBtn);
+        let createDummyProject = createElementEx("button", "add-dummy-project", [], "Add Dummy Project");
+        createDummyProject.addEventListener('click', () => this.addDummyData());
+        this.DOM_ELEMENTS.projects.append(newProjectBtn, createDummyProject);
 
         pubsub.subscribe("todo_add_to_project", (data) => this.refreshProjectButton(data.project));
         pubsub.subscribe("todo_remove_from_project", (data) => this.refreshProjectButton(data.project));
         pubsub.subscribe("todo_done_state_change", (data) => this.refreshProjectButton(this.getToDoProject(data.todo)));
+        pubsub.subscribe("data_changed", () => this.saveToLocalStorage());
 
         this.resetView();
     }
@@ -69,6 +74,7 @@ class App {
         const project = new Project(name, description);
         this.projects.push(project);
         this.DOM_ELEMENTS.projects.appendChild(this.createAndBindEvents_ProjectButton(project));
+        pubsub.publish("data_changed");
         return project;
     }
 
@@ -86,6 +92,7 @@ class App {
         this.projects.splice(this.projects.indexOf(project), 1);
         if(this.current_project === project) this.resetView();
 
+        pubsub.publish("data_changed");
         // We don't want to trigger a click on the project button itself, which leads the user to view the project!
         event.stopPropagation(); 
         return project;
@@ -146,6 +153,7 @@ class App {
         const todo = new ToDo(todoDetails.name, todoDetails.description);
         this.current_project.addToDo(todo);
         this.addToDoNodeToDOM(todo);
+        pubsub.publish("data_changed");
         return todo;
     }
 
@@ -160,6 +168,7 @@ class App {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             this.saveToDo(todo, newEl, form);
+            pubsub.publish("data_changed");
         })
         form.addEventListener("reset", (e) => {
             e.preventDefault();
@@ -186,6 +195,7 @@ class App {
         todo.toggleDoneState();
 
         const todoEl = event.target.parentElement.parentElement;
+        pubsub.publish("data_changed");
         this.refreshToDoDOMNode(todo, todoEl);
     }
 
@@ -194,6 +204,7 @@ class App {
         todoEl.remove();
 
         this.current_project.deleteToDo(todo);
+        pubsub.publish("data_changed");
         return todo;
     }
 
@@ -215,6 +226,31 @@ class App {
 
     // </ToDo Functions>
 
+
+    
+    // <Storage Functions>
+    saveToLocalStorage() {
+        localStorage.setItem("projects", JSON.stringify(this.projects));
+    }
+
+    getFromLocalStorage() {
+        return localStorage.getItem("projects");
+    }
+
+    loadLocalStorage() {
+        const projData = JSON.parse(this.getFromLocalStorage());
+        for(let project of projData) {
+            let proj = this.addNewProject(project.title, project.description);
+            for(let todo of project.todos) {
+                let todoObj = new ToDo(todo.title, todo.description);
+                proj.addToDo(todoObj);
+                todoObj.due_at = todo.due_at;
+                todoObj.priority = todo.priority;
+                todoObj.done = todo.done;
+            }
+        }
+    }
+    // </Storage Functions>
 
     // <Misc Functions>
     resetView() {

@@ -13,6 +13,7 @@ export default class Project extends Entity {
             'todo' : todo,
             'project' : this
         });
+        return todo;
     }
 
     deleteToDo(todo) {
