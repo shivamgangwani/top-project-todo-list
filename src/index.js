@@ -8,7 +8,8 @@ import initDOM, {
     createProjectButtonDOMNode,
     getProjectButtonNode,
     createAddToDoButton,
-    createToDoDOMNode
+    createToDoDOMNode,
+    createEditToDoDOMNode
 } from './modules/dom';
 
 
@@ -125,13 +126,13 @@ class App {
 
     
     // <ToDo Functions>
-    createToDoNode(todo, project) {
+    createToDoNode(todo) {
         const tmp = createToDoDOMNode(todo);
         tmp.doneBtn.addEventListener('click', (e) => this.flipToDoDone(todo, e));
         tmp.deleteBtn.addEventListener('click', (e) => this.deleteToDo(todo, e));
 
         // Enable edit buttons only if todo is not marked as done yet
-        if(!todo.done) [tmp.editBtn, tmp.dueBtn, tmp.priorityBtn].forEach((k) => k.addEventListener('click', (e) => this.editToDo(todo, e)));;
+        if(!todo.done) [tmp.editBtn, tmp.dueBtn, tmp.priorityBtn].forEach((k) => { if(k) { k.addEventListener('click', (e) => this.editToDo(todo, e)) } });
         return tmp.todoEl;
     }
 
@@ -148,8 +149,38 @@ class App {
         return todo;
     }
 
-    editToDo(todo, event) { 
-        console.log("editToDo called");
+    editToDo(todo, event) {
+        const todoBtn = event.target.parentElement.parentElement.parentElement;
+        const editNodeAndForm = createEditToDoDOMNode(todo);
+        const newEl = editNodeAndForm.todoEl;
+        todoBtn.replaceWith(newEl);
+
+        const form = editNodeAndForm.form;
+        this.DOM_ELEMENTS.contentAreaBody.appendChild(form);
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            this.saveToDo(todo, newEl, form);
+        })
+        form.addEventListener("reset", (e) => {
+            e.preventDefault();
+            this.cancelEdit(todo, newEl, form);
+        })
+    }
+
+    cancelEdit(todo, node, form) {
+        this.refreshToDoDOMNode(todo, node);
+        form.remove();
+    }
+
+    saveToDo(todo, node, form) {
+        const newData = new FormData(form);
+        todo.title = newData.get('title');
+        todo.description = newData.get('description');
+        if(newData.get('dueDate')) todo.due_at = newData.get('dueDate');
+        if(newData.get('priority')) todo.priority = newData.get('priority');
+        console.log(todo);
+        this.refreshToDoDOMNode(todo, node);
+        form.remove();
     }
 
     flipToDoDone(todo, event) {

@@ -82,11 +82,27 @@ export const createToDoDOMNode = (function() {
         return {el, editBtn, deleteBtn};
     }
 
+    function getPriorityClass(priority) {
+        switch(priority) {
+            case "High" : return "priority-high";
+            case "Low" : return "priority-low";
+            case "Medium" : return "priority-medium";
+        }
+    }
+
     function createDOMNodeInfoRight(todo) {
         const el = createElementEx("div", '', ['todo-info-right'], "");
-        const priorityBtn = createElementEx("button", '', ['todo-info-priority'], todo.priority);
-        const dueBtn = createElementEx("button", '', ['todo-info-due-date'], todo.due_at);
-        el.append(priorityBtn, dueBtn);
+        let priorityBtn = null;
+        let dueBtn = null;
+        if(todo.priority) {
+            priorityBtn = createElementEx("button", '', ['todo-info-priority'], `Priority: ${todo.priority}`);
+            priorityBtn.classList.add(getPriorityClass(todo.priority));
+            el.append(priorityBtn);
+        }
+        if(todo.due_at) {
+            dueBtn = createElementEx("button", '', ['todo-info-due-date'], `Due: ${todo.due_at}`);
+            el.append(dueBtn);
+        }
         return {el, priorityBtn, dueBtn}
     }
 
@@ -123,6 +139,72 @@ export const createToDoDOMNode = (function() {
     }
     return createDOMNode;
 })();
+
+function createInputEx(formId, type, name='', value='', placeholder='', maxlength=-1, selected=false) {
+    let el = createElementEx("input");
+    el.setAttribute("form", formId);
+    el.setAttribute("type", type);
+    el.setAttribute("name", name);
+    el.setAttribute("value", value);
+    el.setAttribute("placeholder", placeholder);
+    if(maxlength !== -1) el.setAttribute("maxlength", maxlength);
+    if(selected) el.setAttribute("checked", true);
+    return el;
+}
+
+function createPriorityInput(todo, formId) {
+    const priorityOptions = [
+        createLabelInputPair("Low", createInputEx(formId, "radio", "priority", "Low", '', -1, (todo.priority === "Low")), true),
+        createLabelInputPair("Medium", createInputEx(formId, "radio", "priority", "Medium", '', -1, (todo.priority === "Medium")), true),
+        createLabelInputPair("High", createInputEx(formId, "radio", "priority", "High", '', -1, (todo.priority === "High")), true)
+    ];
+    const priorityInput = createElementEx("div");
+    priorityInput.append(...priorityOptions);
+    return priorityInput;
+}
+
+function createToDoEditForm(todo, formId) {
+    const editForm = createElementEx("div", '', ['todo-edit-form'], "");
+    const inputs = {
+        "" : createInputEx(formId, "text", "title", todo.title, "Title", 20),
+        "Description: " : createInputEx(formId, "text", "description", todo.title, "Description"),
+        "Due Date" : createInputEx(formId, "date", "dueDate", todo.due_at, "Due Date"),
+        "Priority" : createPriorityInput(todo, formId),
+    };
+
+    for(const [k,v] of Object.entries(inputs)) {
+        const inpPair = createLabelInputPair(k, v);
+        editForm.appendChild(inpPair);
+    }
+    return editForm;
+}
+
+export function createEditToDoDOMNode(todo) {
+    let form = createElementEx("form");
+    const formId = `form_todo_${todo.id}`;
+    form.setAttribute("id", formId);
+
+    let todoEl = createElementEx("div", '', ['todo-container']);
+    todoEl.setAttribute("data-index", todo.id);
+    
+    const formActionsContainer = createElementEx("div");
+    const submitBtn = createInputEx(formId, "submit", "submit", "Submit");
+    const cancelBtn = createInputEx(formId, "reset", "reset", "Cancel");
+    formActionsContainer.append(submitBtn, cancelBtn);
+    const editForm = createToDoEditForm(todo, formId);
+
+    todoEl.append(formActionsContainer, editForm);
+    return {todoEl, form};
+}
+
+function createLabelInputPair(labelText, inputNode, inputFirst=false) {
+    const inputContainer = createElementEx("div", '', ['input-container']);
+    const label = createElementEx("label", '', [], labelText);
+    if(inputFirst) inputContainer.append(inputNode, label);
+    else inputContainer.append(label, inputNode);
+    return inputContainer;
+}
+
 
 // DOM
 export function createAddToDoButton() {

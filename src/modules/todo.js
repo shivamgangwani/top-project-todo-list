@@ -3,7 +3,7 @@ import Entity, {pubsub} from "./shared";
 export default class ToDo extends Entity {
     constructor (title, description) {
         super(title, description);
-        this.due_at = "today";
+        this.due_at = null;
         this.priority = "Low";
         this.done = false;
     }

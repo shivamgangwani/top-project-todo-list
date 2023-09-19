@@ -142,8 +142,6 @@ button.project-button-delete {
     padding: 0.5rem 1.2rem;
     margin-bottom: 0.5rem;
     border: 0;
-    background-color: #141414;
-    color: white;
     border-radius: 6px;
 }
 
@@ -187,4 +185,38 @@ button.project-button-delete {
 
 #add-icon-text {
     margin-left: 1rem;
+}
+
+.todo-edit-form > .input-container:not(:last-child) {
+    margin-bottom: 1.2rem;
+}
+
+.input-container input{
+    border: 0;
+    padding: 0.25rem;
+}
+
+.input-container input[type='text'], .input-container input[type='date'] {
+    display: block;
+    border-radius: 6px;
+}
+
+.priority-low {
+    background-color: teal;
+    color: white;
+}
+
+.priority-medium {
+    background-color: orange;
+    color: white;
+}
+
+.priority-high {
+    background-color: firebrick;
+    color: white;
+}
+
+.todo-info-due-date {
+    background: #141414;
+    color: white;
 }
