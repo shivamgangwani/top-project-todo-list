@@ -1,4 +1,4 @@
-import Entity from "./shared";
+import Entity, {pubsub} from "./shared";
 
 
 export default class Project extends Entity {
@@ -9,10 +9,18 @@ export default class Project extends Entity {
 
     addToDo(todo) {
         this.todos.push(todo);
+        pubsub.publish('todo_add_to_project', {
+            'todo' : todo,
+            'project' : this
+        });
     }
 
     deleteToDo(todo) {
         this.todos.splice(this.todos.indexOf(todo), 1);
+        pubsub.publish('todo_remove_from_project', {
+            'todo' : todo,
+            'project' : this
+        });
     }
 
     viewToDos() {

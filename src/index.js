@@ -39,7 +39,7 @@ class App {
 
     addDummyData() {
         // Sample data for testing
-        let proj = this.createNewProject("Testing", "12345");
+        let proj = this.addNewProject("Testing", "12345");
         proj.addToDo(new ToDo("Test", "123123123"));
         proj.addToDo(new ToDo("Test", "123123123"));
         proj.addToDo(new ToDo("Test", "123123123"));
@@ -48,27 +48,50 @@ class App {
     }
 
 
-    // <Project Functions>
-    addNewProject() {
-        let projDetails = getEntityInput(
-            "Enter project name (Max 20 characters): ",
-            "Enter project description: ",
-        );
-        if(projDetails === undefined) return;
-        return this.createNewProject(projDetails.name, projDetails.description);
-    }
+    // <Project Functions: High level>
+    addNewProject(name=null, description=null) {
+        if(name===null) {
+            let projDetails = getEntityInput(
+                "Enter project name (Max 20 characters): ",
+                "Enter project description: ",
+            );
+            if(projDetails === undefined) return;
+            name = projDetails.name;
+            description = projDetails.description;
+        }
 
-    createNewProject(name, details) {
-        const project = new Project(name, details);
+        const project = new Project(name, description);
         this.projects.push(project);
+        this.addProjectButtonToDOM(project);
+        return project;
+    }
 
-        // Get UI element & bind events 
+    viewProject(project) {
+        this.DOM_ELEMENTS.contentAreaHeader.textContent = project.title;
+        this.DOM_ELEMENTS.contentAreaBody.replaceChildren(createElementEx("p", '', [], project.description));
+        this.renderProjectToDos(project);
+        this.current_project = project;
+        this.DOM_ELEMENTS.todoContainer = this.DOM_ELEMENTS.contentArea.querySelector("#todo-container");
+    }
+
+    deleteProject(project, event) {
+        this.removeProjectButton(event.target);
+
+        this.projects.splice(this.projects.indexOf(project), 1);
+        if(this.current_project === project) this.resetView();
+
+        // We don't want to trigger a click on the project button itself, which leads the user to view the project!
+        event.stopPropagation(); 
+        return project;
+    }
+    
+    // <Project Functions: Helpers>
+    addProjectButtonToDOM(project) {
+        // Create UI element & bind events 
         const projectBtn = createProjectButtonDOMNode(project);
         projectBtn.btn.addEventListener('click', () => this.viewProject(project));
         projectBtn.trashBtn.addEventListener('click', (e) => this.deleteProject(project, e));
-
         this.DOM_ELEMENTS.projects.appendChild(projectBtn.btn);
-        return project;
     }
 
     renderProjectToDos(project) {
@@ -84,24 +107,9 @@ class App {
         return container;
     }
 
-    viewProject(project) {
-        this.DOM_ELEMENTS.contentAreaHeader.textContent = project.title;
-        this.DOM_ELEMENTS.contentAreaBody.replaceChildren(createElementEx("p", '', [], project.description));
-        this.renderProjectToDos(project);
-        this.current_project = project;
-        this.DOM_ELEMENTS.todoContainer = this.DOM_ELEMENTS.contentArea.querySelector("#todo-container");
-    }
-
-    deleteProject(project, event) {
-        const projectBtnEl =  event.target.parentElement
+    removeProjectButton(trashBtnNode) {
+        const projectBtnEl =  trashBtnNode.parentElement
         projectBtnEl.remove(); 
-
-        this.projects.splice(this.projects.indexOf(project), 1);
-        if(this.current_project === project) this.resetView();
-
-        // We don't want to trigger a click on the project button itself, which leads the user to view the project!
-        event.stopPropagation(); 
-        return project;
     }
     // </Project Functions>
 
@@ -123,21 +131,22 @@ class App {
             "Enter description: ",
         );
         if(todoDetails === undefined) return;
+
         const todo = new ToDo(todoDetails.name, todoDetails.description);
         this.current_project.addToDo(todo);
-        this.DOM_ELEMENTS.todoContainer.appendChild(this.createToDoNode(todo));
+        this.addToDoNodeToDOM(todo);
         return todo;
     }
 
-    refreshToDoNode(todo, node) {
-        node.parentElement.replaceChild(this.createToDoNode(todo), node);
+    editToDo(todo, event) { 
+        console.log("editToDo called");
     }
 
     flipToDoDone(todo, event) {
         todo.toggleDoneState();
 
         const todoEl = event.target.parentElement.parentElement;
-        this.refreshToDoNode(todo, todoEl);
+        this.refreshToDoDOMNode(todo, todoEl);
     }
 
     deleteToDo(todo, event) {
@@ -148,8 +157,13 @@ class App {
         return todo;
     }
 
-    editToDo(todo, event) { 
-        console.log("editToDo called");
+    // <ToDo Functions: Helpers>
+    addToDoNodeToDOM(todo) {
+        this.DOM_ELEMENTS.todoContainer.appendChild(this.createToDoNode(todo));
+    }
+
+    refreshToDoDOMNode(todo, node) {
+        node.parentElement.replaceChild(this.createToDoNode(todo), node);
     }
 
     // </ToDo Functions>
