@@ -1,8 +1,15 @@
 import {
+    pubsub,
     createElementEx, 
-    getEntityInput,
-    initDOM
+    getEntityInput
 } from './modules/shared';
+
+import initDOM, {
+    createProjectButtonDOMNode,
+    createAddToDoButton,
+    createToDoDOMNode
+} from './modules/dom';
+
 
 import Project from "./modules/project";
 import ToDo from './modules/todo';
@@ -56,7 +63,7 @@ class App {
         this.projects.push(project);
 
         // Get UI element & bind events 
-        const projectBtn = project.createDOMNode();
+        const projectBtn = createProjectButtonDOMNode(project);
         projectBtn.btn.addEventListener('click', () => this.viewProject(project));
         projectBtn.trashBtn.addEventListener('click', (e) => this.deleteProject(project, e));
 
@@ -68,7 +75,7 @@ class App {
         if(project === null) return;
         const container = createElementEx("div", 'todo-container');
         
-        const addNewToDoButton = ToDo.createAddToDoButton();
+        const addNewToDoButton = createAddToDoButton();
         addNewToDoButton.addEventListener('click', () => this.createToDo(project));
         container.appendChild(addNewToDoButton);
 
@@ -101,7 +108,7 @@ class App {
     
     // <ToDo Functions>
     createToDoNode(todo) {
-        const tmp = todo.createDOMNode();
+        const tmp = createToDoDOMNode(todo);
         tmp.doneBtn.addEventListener('click', (e) => this.flipToDoDone(todo, e));
         tmp.deleteBtn.addEventListener('click', (e) => this.deleteToDo(todo, e));
 
