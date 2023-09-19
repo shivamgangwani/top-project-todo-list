@@ -178,7 +178,6 @@ class App {
         todo.description = newData.get('description');
         if(newData.get('dueDate')) todo.due_at = newData.get('dueDate');
         if(newData.get('priority')) todo.priority = newData.get('priority');
-        console.log(todo);
         this.refreshToDoDOMNode(todo, node);
         form.remove();
     }

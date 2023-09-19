@@ -220,3 +220,17 @@ button.project-button-delete {
     background: #141414;
     color: white;
 }
+
+.todo-edit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todo-edit-actions > input {
+    border: 0;
+    background-color: #141414;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}

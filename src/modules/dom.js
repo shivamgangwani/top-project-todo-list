@@ -187,7 +187,7 @@ export function createEditToDoDOMNode(todo) {
     let todoEl = createElementEx("div", '', ['todo-container']);
     todoEl.setAttribute("data-index", todo.id);
     
-    const formActionsContainer = createElementEx("div");
+    const formActionsContainer = createElementEx("div", '', ['todo-edit-actions']);
     const submitBtn = createInputEx(formId, "submit", "submit", "Submit");
     const cancelBtn = createInputEx(formId, "reset", "reset", "Cancel");
     formActionsContainer.append(submitBtn, cancelBtn);
