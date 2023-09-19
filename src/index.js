@@ -6,6 +6,7 @@ import {
 
 import initDOM, {
     createProjectButtonDOMNode,
+    getProjectButtonNode,
     createAddToDoButton,
     createToDoDOMNode
 } from './modules/dom';
@@ -33,6 +34,10 @@ class App {
         let newProjectBtn = createElementEx("button", "add-new-project", [], "Add Project");
         newProjectBtn.addEventListener('click', () => this.addNewProject());
         this.DOM_ELEMENTS.projects.appendChild(newProjectBtn);
+
+        pubsub.subscribe("todo_add_to_project", (data) => this.refreshProjectButton(data.project));
+        pubsub.subscribe("todo_remove_from_project", (data) => this.refreshProjectButton(data.project));
+        pubsub.subscribe("todo_done_state_change", (data) => this.refreshProjectButton(this.getToDoProject(data.todo)));
 
         this.resetView();
     }
@@ -62,7 +67,7 @@ class App {
 
         const project = new Project(name, description);
         this.projects.push(project);
-        this.addProjectButtonToDOM(project);
+        this.DOM_ELEMENTS.projects.appendChild(this.createAndBindEvents_ProjectButton(project));
         return project;
     }
 
@@ -86,12 +91,12 @@ class App {
     }
     
     // <Project Functions: Helpers>
-    addProjectButtonToDOM(project) {
+    createAndBindEvents_ProjectButton(project) {
         // Create UI element & bind events 
         const projectBtn = createProjectButtonDOMNode(project);
         projectBtn.btn.addEventListener('click', () => this.viewProject(project));
         projectBtn.trashBtn.addEventListener('click', (e) => this.deleteProject(project, e));
-        this.DOM_ELEMENTS.projects.appendChild(projectBtn.btn);
+        return projectBtn.btn;
     }
 
     renderProjectToDos(project) {
@@ -102,7 +107,7 @@ class App {
         addNewToDoButton.addEventListener('click', () => this.createToDo(project));
         container.appendChild(addNewToDoButton);
 
-        project.todos.forEach((todo) => container.appendChild(this.createToDoNode(todo)));
+        project.todos.forEach((todo) => container.appendChild(this.createToDoNode(todo, project)));
         this.DOM_ELEMENTS.contentAreaBody.append(container);
         return container;
     }
@@ -111,11 +116,16 @@ class App {
         const projectBtnEl =  trashBtnNode.parentElement
         projectBtnEl.remove(); 
     }
+
+    refreshProjectButton(project) {
+        const button = getProjectButtonNode(project);
+        button.replaceWith(this.createAndBindEvents_ProjectButton(project));
+    }
     // </Project Functions>
 
     
     // <ToDo Functions>
-    createToDoNode(todo) {
+    createToDoNode(todo, project) {
         const tmp = createToDoDOMNode(todo);
         tmp.doneBtn.addEventListener('click', (e) => this.flipToDoDone(todo, e));
         tmp.deleteBtn.addEventListener('click', (e) => this.deleteToDo(todo, e));
@@ -163,7 +173,14 @@ class App {
     }
 
     refreshToDoDOMNode(todo, node) {
-        node.parentElement.replaceChild(this.createToDoNode(todo), node);
+        node.replaceWith(this.createToDoNode(todo));
+    }
+
+    getToDoProject(todo) {
+        for(let project of this.projects) {
+            if(project.todos.includes(todo)) return project;
+        }
+        return null;
     }
 
     // </ToDo Functions>

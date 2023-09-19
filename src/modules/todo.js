@@ -1,4 +1,4 @@
-import Entity from "./shared";
+import Entity, {pubsub} from "./shared";
 
 export default class ToDo extends Entity {
     constructor (title, description) {
@@ -18,6 +18,9 @@ export default class ToDo extends Entity {
 
     setDoneState(new_state) {
         this.done = new_state;
+        pubsub.publish('todo_done_state_change', {
+            'todo' : this
+        });
     }
 
     toggleDoneState() {

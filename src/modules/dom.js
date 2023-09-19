@@ -29,14 +29,34 @@ export default function initDOM() {
 
 // DOM Functions
 export function createProjectButtonDOMNode(project) {
+    const totaltodos = project.todos.length;
+    const pendingtodos = project.getPendingToDosCount()
+    const progress = (totaltodos > 0) ? `${pendingtodos}` : "";
+
     let btn = createElementEx("button", '', ['project-button']);
+    if(totaltodos === 0) btn.classList.add('project-empty');
+    else {
+        if(pendingtodos === 0) btn.classList.add('project-complete');
+        else btn.classList.add('project-incomplete');
+    }
     btn.setAttribute("data-index", project.id);
-    let title = createElementEx("p", '', ['project-button-title'], project.title);
+    let title = createElementEx("p", '', ['project-button-title']);
+    if(progress !== "") {
+        let titleProgress = createElementEx("span", '', ['project-button-progress'], progress);
+        title.append(titleProgress)
+    }
+    let titleTitle = createElementEx("span", '', ['project-button-title-text'], project.title);
+    title.append(titleTitle);
+
     let trashBtn = createElementEx("img", '', ['project-delete-trash-icon'], "");
     trashBtn.src = trashIcon;
 
     btn.append(title, trashBtn);
     return {btn, trashBtn};
+}
+
+export function getProjectButtonNode(project) {
+    return document.querySelector(`.project-button[data-index='${project.id}']`);
 }
 
 

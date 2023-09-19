@@ -54,6 +54,15 @@ h1 {
     justify-content: space-between;
 }
 
+#projects > button.project-button.project-complete .project-button-title-text {
+    text-decoration: line-through;
+}
+
+#projects > button.project-button.project-complete {
+    background-color: #004225;
+    color: white;
+}
+
 .project-button button:first-child {
     flex-grow: 1;
 }
@@ -66,9 +75,23 @@ button.project-button-delete {
     padding: 0;
 }
 
+.project-button-progress {
+    background-color: #141414;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    margin-right: 0.3rem;
+    border-radius: 24px;
+    text-align: center;
+
+}
+
 .project-delete-trash-icon {
     height: 24px;
     width: auto;
+}
+
+.project-complete .project-delete-trash-icon {
+    filter: invert();
 }
 /* </Sidebar> */
 
