@@ -1,7 +1,9 @@
 export default class Entity {
+    static entityCount = 0;
     constructor(title, description) {
         this.title = title;
         this.description = description;
+        this.id = Entity.entityCount++;
     }
 
     setTitle(title) {

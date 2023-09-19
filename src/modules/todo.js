@@ -67,6 +67,7 @@ export default class ToDo extends Entity {
 
     createDOMNode() {
         let todoEl = createElementEx("div", '', ['todo-container']);
+        todoEl.setAttribute("data-index", this.id);
         if(this.done) todoEl.classList.add('item-done');
 
         const checkZone = this.createDOMNodeCheckZone();

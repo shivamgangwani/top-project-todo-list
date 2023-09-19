@@ -34,6 +34,7 @@ export default class Project extends Entity {
     // DOM Functions
     createDOMNode() {
         let btn = createElementEx("button", '', ['project-button']);
+        btn.setAttribute("data-index", this.id);
         let title = createElementEx("p", '', ['project-button-title'], this.title);
         let trashBtn = createElementEx("img", '', ['project-delete-trash-icon'], "");
         trashBtn.src = trashIcon;
